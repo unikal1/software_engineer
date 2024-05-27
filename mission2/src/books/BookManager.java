@@ -8,7 +8,7 @@ public class BookManager {
 
     public void addBook(Book book) throws DuplicateValueException {
         if(!isAlreadyExist(book.getId())) {
-            books.add(indexOfBook(book.getId()), book);
+            books.add(book);
             return;
         }
         throw new DuplicateValueException(searchBook(book.getId()).get().printInfo());
@@ -27,25 +27,35 @@ public class BookManager {
         Book book = searchBook(id).orElseThrow(NoSuchElementException::new);
         books.remove(book);
     }
+    
+    public Optional<Book> search_bs(int id) {
+        int left = 0;
+        int right = books.size() - 1;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            Book midBook = books.get(mid);
+
+            if (midBook.getId() == id) {
+                return Optional.of(midBook);
+            }
+
+            if (midBook.getId() < id) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return Optional.empty();
+    }
+    
     private boolean isAlreadyExist(int id) {
         if(books.isEmpty())
             return false;
 
-        for (Book book : books) {
-            if (book.getId() == id) {
-                return true;
-            }
-        }
-        return false;
+        if(search_bs(id).isPresent()) { return true; }
+        else { return false; }
     }
 
-    private int indexOfBook(int id) {
-        for (int i = 0; i < books.size(); i++) {
-            if (books.get(i).getId() > id) {
-                return i;
-            }
-        }
-        return books.size();
-    }
 
 }
