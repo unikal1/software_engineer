@@ -111,5 +111,52 @@ class BookManagerTest {
         assertThrows(Exception.class, () -> bookManager.searchBook(1).orElseThrow(Exception::new));
         System.out.println("검색된 도서가 없습니다.");
     }
+    
+    @Test
+    void testSearchBookBinarySearch() {
+        // given
+        Book newBook1 = new Book(1, "자바 기초", "Jane", 2021);
+        Book newBook2 = new Book(2, "소프트웨어 공학", "Tom", 2014);
+        Book newBook3 = new Book(3, "분산 컴퓨팅", "Yoon", 2024);
+
+        // when
+        assertDoesNotThrow(() ->
+                bookManager.addBook(newBook1)
+        );
+        System.out.println(newBook1.printInfo() + " 도서가 추가되었습니다.");
+        assertDoesNotThrow(() ->
+                bookManager.addBook(newBook2)
+        );
+        System.out.println(newBook2.printInfo() + " 도서가 추가되었습니다.");
+        assertDoesNotThrow(() ->
+                bookManager.addBook(newBook3)
+        );
+        System.out.println(newBook3.printInfo() + " 도서가 추가되었습니다.");
+
+        // then
+        Book searchBook1 = assertDoesNotThrow(() -> {
+                    return bookManager.search_bs(1).orElseThrow(Exception::new);
+                }
+        );
+        assertEquals(newBook1, searchBook1);
+        System.out.println("이진 탐색 검색 결과\n" + searchBook1.printInfo());
+
+        Book searchBook2 = assertDoesNotThrow(() -> {
+                    return bookManager.search_bs(2).orElseThrow(Exception::new);
+                }
+        );
+        assertEquals(newBook2, searchBook2);
+        System.out.println("이진 탐색 검색 결과\n" + searchBook2.printInfo());
+
+        Book searchBook3 = assertDoesNotThrow(() -> {
+                    return bookManager.search_bs(3).orElseThrow(Exception::new);
+                }
+        );
+        assertEquals(newBook3, searchBook3);
+        System.out.println("이진 탐색 검색 결과\n" + searchBook3.printInfo());
+
+        assertThrows(Exception.class, () -> bookManager.search_bs(4).orElseThrow(Exception::new));
+        System.out.println("이진 탐색으로 검색된 도서가 없습니다.");
+    }
 
 }
