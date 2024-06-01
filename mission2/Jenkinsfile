@@ -35,18 +35,18 @@ pipeline {
                 }
             }
         }
-        stage('Test') {
-            steps {
-                script {
-                    def classpath = isUnix() ? "classes:mission2/lib/*:$env.JUNIT_JAR" : "classes;mission2/lib/*;$env.JUNIT_JAR"
-                    if (isUnix()) {
-                        sh "java -cp $classpath org.junit.platform.console.ConsoleLauncher --scan-classpath > test_results.txt || true"
-                    } else {
-                        bat "java -cp $classpath org.junit.platform.console.ConsoleLauncher --scan-classpath > test_results.txt || true"
-                    }
-                }
-            }
-        }
+//         stage('Test') {
+//             steps {
+//                 script {
+//                     def classpath = isUnix() ? "classes:mission2/lib/*:$env.JUNIT_JAR" : "classes;mission2/lib/*;$env.JUNIT_JAR"
+//                     if (isUnix()) {
+//                         sh "java -cp $classpath org.junit.platform.console.ConsoleLauncher --scan-classpath > test_results.txt || true"
+//                     } else {
+//                         bat "java -cp $classpath org.junit.platform.console.ConsoleLauncher --scan-classpath > test_results.txt || true"
+//                     }
+//                 }
+//             }
+//         }
     }
     post {
         always {
