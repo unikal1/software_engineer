@@ -24,7 +24,7 @@ pipeline {
             steps {
                 // JUnit 5 테스트 실행을 위한 classpath 설정
                 script {
-                    def junitJar =  "lib/junit-platform-console-standalone-1.7.1.jar"
+                    def junitJar =  "lib/junit-platform-console-standalone-1.7.1-all.jar"
                      def classpath = isUnix() ? "classes:lib/*:$junitJar" : "classes;lib/*;$junitJar"
                     if (isUnix()) {
                         sh "java -cp $classpath org.junit.platform.console.ConsoleLauncher --scan-classpath > test_results.txt"
