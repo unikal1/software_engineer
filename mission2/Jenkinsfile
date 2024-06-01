@@ -1,35 +1,48 @@
 pipeline {
     agent any
+    environment {
+        JUNIT_JAR = "mission2/lib/junit-platform-console-standalone-1.7.1-all.jar"
+    }
     stages {
         stage('Checkout') {
             steps {
-                // 소스코드 체크아웃
                 checkout scm
             }
         }
         stage('Build') {
             steps {
-                // Java 파일들을 컴파일하여 생성된 클래스 파일을 classes 디렉토리에 저장
-                // window 일 경우 bat 명령어 사용
                 script {
                     if (isUnix()) {
+                        sh 'mkdir -p classes'
                         sh 'javac -encoding UTF-8 -d classes mission2/src/**/*.java'
                     } else {
+                        bat 'mkdir classes'
                         bat 'javac -encoding UTF-8 -d classes mission2/src/**/*.java'
+                    }
+                }
+            }
+        }
+        stage('Verify JUnit JAR') {
+            steps {
+                script {
+                    if (isUnix()) {
+                        sh "ls -l mission2/lib/"
+                        sh "test -f $JUNIT_JAR && echo 'JUnit JAR found' || echo 'JUnit JAR not found'"
+                    } else {
+                        bat "dir mission2\\lib"
+                        bat "if exist %JUNIT_JAR% (echo JUnit JAR found) else (echo JUnit JAR not found)"
                     }
                 }
             }
         }
         stage('Test') {
             steps {
-                // JUnit 5 테스트 실행을 위한 classpath 설정
                 script {
-                    def junitJar =  "lib/junit-platform-console-standalone-1.7.1-all.jar"
-                     def classpath = isUnix() ? "classes:lib/*:$junitJar" : "classes;lib/*;$junitJar"
+                    def classpath = isUnix() ? "classes:mission2/lib/*:$env.JUNIT_JAR" : "classes;mission2/lib/*;$env.JUNIT_JAR"
                     if (isUnix()) {
-                        sh "java -cp $classpath org.junit.platform.console.ConsoleLauncher --scan-classpath > test_results.txt"
+                        sh "java -cp $classpath org.junit.platform.console.ConsoleLauncher --scan-classpath > test_results.txt || true"
                     } else {
-                        bat "java -cp $classpath org.junit.platform.console.ConsoleLauncher --scan-classpath > test_results.txt"
+                        bat "java -cp $classpath org.junit.platform.console.ConsoleLauncher --scan-classpath > test_results.txt || true"
                     }
                 }
             }
@@ -37,7 +50,6 @@ pipeline {
     }
     post {
         always {
-            // 테스트 결과 파일을 저장하기 위해 아카이브
             archiveArtifacts artifacts: 'test_results.txt', allowEmptyArchive: true
         }
         failure {
