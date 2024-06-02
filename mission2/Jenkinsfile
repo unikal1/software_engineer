@@ -11,14 +11,14 @@ pipeline {
             steps {
                 // Java 파일들을 컴파일하여 생성된 클래스 파일을 classes 디렉토리에 저장
                 // Windows 일 경우 bat, Unix 계열은 sh 사용
-                sh 'javac -encoding UTF-8 -d classes Practice/src/**/*.java'
+                sh 'javac -encoding UTF-8 -d classes mission2/src/**/*.java'
             }
         }
         stage('Test') {
             steps {
                 // JUnit 5 테스트 실행을 위한 classpath 설정
                 script {
-                    def classpath = "classes:lib/:path/to/eclipse/plugins/junit-platform-console-standalone-1.7.1.jar"
+                    def classpath = "classes:lib/*:plugins/junit-platform-console-standalone-1.7.1.jar"
                     // JUnit 5 테스트 실행
                     sh "java -cp ${classpath} org.junit.platform.console.ConsoleLauncher --scan-classpath > test_results.txt"
                 }
