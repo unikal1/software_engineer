@@ -20,7 +20,7 @@ pipeline {
                 script {
                     def classpath = "classes:mission2/lib/junit-platform-console-standalone-1.7.1.jar"
                     // JUnit 5 테스트 실행
-                    sh "java -cp ${classpath} org.junit.platform.console.ConsoleLauncher --scan-classpath > test_results.txt"
+                    sh "java -Dfile.encoding=UTF-8 -cp ${classpath} org.junit.platform.console.ConsoleLauncher --scan-classpath > test_results.txt"
                 }
             }
         }
